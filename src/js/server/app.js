@@ -1,12 +1,12 @@
-'use strict'
+'use strict';
 
-var bunyan = require('bunyan')
-var log = bunyan.createLogger({name: "biz"})
-var koa = require('koa')
-var route = require('koa-router')()
-var parse = require('co-body')
+var bunyan = require('bunyan');
+var log = bunyan.createLogger({name: "demo"});
+var koa = require('koa');
+var route = require('koa-router')();
+var parse = require('co-body');
 
-var app = koa()
+var app = koa();
 
 app.use(function *(next) {
     try {
@@ -24,7 +24,7 @@ app.use(function *(next) {
 
 route.get('/check', function*() {
     this.body = yield render();
-})
+});
 
 app.use(route.routes())
     .use(route.allowedMethods());
@@ -34,4 +34,4 @@ app.on('error', function (err) {
     log.error(err);
 });
 app.listen(3333);
-log.info('listening on port 6666');
+log.info('listening on port 3333');

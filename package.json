@@ -2,9 +2,9 @@
   "name": "react-isomorphic-boilerplate",
   "version": "0.0.1",
   "description": "",
-  "main": "app.js",
   "scripts": {
-    "build": "gulp"
+    "build": "gulp build",
+    "start": "node --harmony lib/server/app.js"
   },
   "author": "",
   "license": "MIT",

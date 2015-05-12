@@ -44,6 +44,10 @@ gulp.task('images', function () {
         .pipe($.imagemin())
         .pipe(gulp.dest(dist + 'public/images/'));
 });
+gulp.task('misc', function () {
+    return gulp.src('package.json')
+        .pipe(gulp.dest(dist));
+});
 
 // watch styl, html and js file changes
 gulp.task('watch', function () {
@@ -65,5 +69,5 @@ gulp.task('default', ['build', 'watch']);
 gulp.task('scripts', ['scripts-server', 'scripts-shared', 'scripts-client']);
 // waits until clean is finished then builds the project
 gulp.task('build', ['clean'], function () {
-    gulp.start(['images', 'css', 'html', 'scripts']);
+    gulp.start(['images', 'css', 'html', 'scripts', 'misc']);
 });
