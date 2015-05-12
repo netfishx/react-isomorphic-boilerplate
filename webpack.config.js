@@ -4,7 +4,7 @@ var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
-    entry: './src/client/app',
+    entry: './src/js/client/app',
     output: {
         path: path.join(__dirname, '/public/js/'),
         filename: 'app.min.js'

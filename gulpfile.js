@@ -7,56 +7,63 @@ var environment = process.env.NODE_ENV || 'development';
 var isProduction = environment === 'production';
 var webpackConfig = require('./webpack.config.js');
 
-var app = 'src/';
+var src = 'src/';
 var dist = 'dist/';
 
-// https://github.com/ai/autoprefixer
-var autoprefixerBrowsers = [
-    'ie >= 9',
-    'ie_mob >= 10',
-    'ff >= 30',
-    'chrome >= 34',
-    'safari >= 6',
-    'opera >= 23',
-    'ios >= 6',
-    'android >= 4.4',
-    'bb >= 10'
-];
+gulp.task('css', function () {
+    return gulp.src(src + 'css/**/*.css')
+        .pipe($.cssmin())
+        .pipe(gulp.dest(dist + 'public/css/'));
+});
 
-gulp.task('scripts', function() {
+gulp.task('html', function () {
+    return gulp.src(src + 'html/**/*.html')
+        .pipe(gulp.dest(dist + 'lib/server/views/'));
+});
+
+gulp.task('scripts-client', function () {
     return gulp.src(webpackConfig.entry)
         .pipe($.webpack(webpackConfig))
         .pipe(isProduction ? $.uglifyjs() : $.util.noop())
-        .pipe(gulp.dest(dist + 'js/'))
-        //.pipe($.size({ title : 'js' }))
-        .pipe($.livereload());
+        .pipe(gulp.dest(dist + 'public/js/'))
+});
+
+gulp.task('scripts-server', function () {
+    return gulp.src(src + 'js/server/**/*.js')
+        .pipe(gulp.dest(dist + 'lib/server'))
+});
+
+gulp.task('scripts-shared', function () {
+    return gulp.src(src + 'js/shared/**/*.js')
+        .pipe(gulp.dest(dist + 'lib/shared'))
 });
 
 // copy images
-gulp.task('images', function(cb) {
-    return gulp.src(app + 'images/**/*.{png,jpg,jpeg,gif}')
-        //.pipe($.size({ title : 'images' }))
-        .pipe(gulp.dest(dist + 'images/'));
+gulp.task('images', function () {
+    return gulp.src(src + 'images/**/*.{png,jpg,jpeg,gif}')
+        .pipe($.imagemin())
+        .pipe(gulp.dest(dist + 'public/images/'));
 });
 
 // watch styl, html and js file changes
-gulp.task('watch', function() {
-    //gulp.watch(app + 'stylus/*.styl', ['styles']);
-    gulp.watch(app + 'index.html', ['html']);
-    gulp.watch(app + 'scripts/**/*.js', ['scripts']);
-    gulp.watch(app + 'scripts/**/*.jsx', ['scripts']);
+gulp.task('watch', function () {
+    gulp.watch(src + 'css/*.css', ['css']);
+    gulp.watch(src + 'images/*.css', ['images']);
+    gulp.watch(src + 'html/**/*.html', ['html']);
+    gulp.watch(src + 'js/**/*.js', ['scripts']);
+    gulp.watch(src + 'js/**/*.jsx', ['scripts']);
 });
 
 // remove bundels
-gulp.task('clean', function(cb) {
+gulp.task('clean', function (cb) {
     del([dist], cb);
 });
 
 
 // by default build project and then watch files in order to trigger livereload
-gulp.task('default', ['build', 'serve', 'watch']);
-
+gulp.task('default', ['build', 'watch']);
+gulp.task('scripts', ['scripts-server', 'scripts-shared', 'scripts-client']);
 // waits until clean is finished then builds the project
-gulp.task('build', ['clean'], function(){
-    gulp.start(['images', 'html','scripts']);
+gulp.task('build', ['clean'], function () {
+    gulp.start(['images', 'css', 'html', 'scripts']);
 });
