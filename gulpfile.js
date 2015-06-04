@@ -3,8 +3,6 @@ var path = require('path');
 var $ = require('gulp-load-plugins')();
 var del = require('del');
 // set variable via $ gulp --type production
-var environment = process.env.NODE_ENV || 'development';
-var isProduction = environment === 'production';
 var webpackConfig = require('./webpack.config.js');
 
 var src = 'src/';
@@ -24,7 +22,6 @@ gulp.task('html', function () {
 gulp.task('scripts-client', function () {
     return gulp.src(webpackConfig.entry)
         .pipe($.webpack(webpackConfig))
-        .pipe(isProduction ? $.uglifyjs() : $.util.noop())
         .pipe(gulp.dest(dist + 'public/js/'))
 });
 
@@ -45,7 +42,7 @@ gulp.task('images', function () {
         .pipe(gulp.dest(dist + 'public/images/'));
 });
 gulp.task('misc', function () {
-    return gulp.src('package.json')
+    return gulp.src(['package.json', '.babelrc'])
         .pipe(gulp.dest(dist));
 });
 
