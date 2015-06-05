@@ -22,10 +22,7 @@ app.use('/static', express.static(path.join(__dirname, '../../public')));
 const userDataSource = knex({
     client: 'mysql',
     connection: {
-        host: '192.168.168.136',
-        user: 'root',
-        port: 33306,
-        password: '780810',
+
         database: 'UserCenter'
     },
     pool: {
